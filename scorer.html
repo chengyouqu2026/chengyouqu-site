@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>项目能不能干 · 程有趣出品</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0a0a;
+  --card: #141414;
+  --border: #2a2a2a;
+  --gold: #c9953c;
+  --gold-dim: rgba(201,149,60,0.15);
+  --text: #e8e8e8;
+  --text-dim: #888;
+  --red: #8b2035;
+  --green: #2d6a4f;
+  --amber: #b8860b;
+}
+body {
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+.container { max-width: 640px; margin: 0 auto; padding: 20px 16px 80px; }
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 40px 0 30px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 30px;
+}
+.header .brand {
+  font-size: 11px;
+  letter-spacing: 6px;
+  color: var(--gold);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--text) 40%, var(--gold));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.header .subtitle {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+/* Progress */
+.progress-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--bg);
+  padding: 12px 0;
+  margin-bottom: 20px;
+}
+.progress-track {
+  height: 3px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: var(--gold);
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.progress-text {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+/* Sections */
+.section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.section.active { display: block; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--gold);
+}
+.section-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+/* Question Card */
+.q-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.q-label {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+.q-hint {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+}
+
+/* Options */
+.options { display: flex; flex-direction: column; gap: 8px; }
+.option {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 14px;
+}
+.option:hover { border-color: var(--gold); background: var(--gold-dim); }
+.option.selected { border-color: var(--gold); background: var(--gold-dim); }
+.option input { display: none; }
+.option .radio {
+  width: 18px; height: 18px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  margin-right: 12px;
+  flex-shrink: 0;
+  position: relative;
+  transition: all 0.2s;
+}
+.option.selected .radio {
+  border-color: var(--gold);
+}
+.option.selected .radio::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+}
+
+/* Text Input */
+.text-input {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.text-input:focus { border-color: var(--gold); }
+.text-input::placeholder { color: #555; }
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 30px;
+}
+.btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-prev {
+  background: var(--card);
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+}
+.btn-prev:hover { border-color: var(--gold); color: var(--text); }
+.btn-next {
+  background: linear-gradient(135deg, var(--gold), #a67a2e);
+  color: #0a0a0a;
+}
+.btn-next:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-next:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+.btn-submit {
+  background: linear-gradient(135deg, #8b2035, #6b1525);
+  color: #fff;
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  margin-top: 20px;
+}
+.btn-submit:hover { opacity: 0.9; }
+
+/* Result */
+.result-header {
+  text-align: center;
+  padding: 40px 0 20px;
+}
+.score-circle {
+  width: 160px; height: 160px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+.score-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.score-circle .bg { fill: none; stroke: var(--border); stroke-width: 8; }
+.score-circle .fill { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1.5s ease; }
+.score-num {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 42px;
+  font-weight: 700;
+}
+.score-num small { font-size: 14px; color: var(--text-dim); font-weight: 400; }
+
+.verdict {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.verdict-sub {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-bottom: 30px;
+}
+
+/* Dimension Bars */
+.dim-section {
+  margin-bottom: 30px;
+}
+.dim-item {
+  margin-bottom: 20px;
+}
+.dim-label {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+.dim-label span:last-child { color: var(--gold); font-weight: 600; }
+.dim-bar {
+  height: 8px;
+  background: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.dim-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1s ease;
+}
+
+/* Analysis */
+.analysis-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.analysis-card .tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.analysis-card h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.analysis-card p {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+.analysis-card .quote {
+  font-size: 13px;
+  color: var(--gold);
+  font-style: italic;
+  padding-left: 12px;
+  border-left: 2px solid var(--gold);
+  margin-top: 12px;
+}
+
+/* Action Steps */
+.steps { margin-top: 20px; }
+.step {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.step-num {
+  width: 28px; height: 28px;
+  background: var(--gold-dim);
+  color: var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.step-text { font-size: 14px; line-height: 1.6; }
+
+/* Warning */
+.warning-card {
+  background: rgba(139,32,53,0.1);
+  border: 1px solid rgba(139,32,53,0.3);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.warning-card h3 { color: #d44; margin-bottom: 8px; font-size: 16px; }
+.warning-card p { color: var(--text-dim); font-size: 14px; line-height: 1.7; }
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 40px 0 20px;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.footer .brand-name {
+  font-size: 16px;
+  letter-spacing: 8px;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+.footer .copyright {
+  font-size: 11px;
+  color: #555;
+  letter-spacing: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="brand">程 有 趣 出 品</div>
+    <h1>项目能不能干</h1>
+    <div class="subtitle">三维打分 · 10秒出结果 · 不靠感觉靠算数</div>
+  </div>
+
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-text">
+      <span id="progressLabel">第1步 / 共5步</span>
+      <span id="progressPct">0%</span>
+    </div>
+  </div>
+
+  <!-- Step 0: 项目基本信息 -->
+  <div class="section active" id="step0">
+    <div class="section-title">📋 先说说你的项目</div>
+    <div class="section-desc">填完基本信息，后面打分才能准</div>
+
+    <div class="q-card">
+      <div class="q-label">项目名称 / 简要描述</div>
+      <div class="q-hint">一句话说清楚你要干什么</div>
+      <input type="text" class="text-input" id="projName" placeholder="如：在社区开一家宠物洗护店">
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">你的预算大概多少？</div>
+      <div class="q-hint">启动资金上限</div>
+      <div class="options" id="budget">
+        <label class="option" data-val="1"><div class="radio"></div>几乎零成本（0-5000元）</label>
+        <label class="option" data-val="2"><div class="radio"></div>小成本（5000-5万）</label>
+        <label class="option" data-val="3"><div class="radio"></div>中等投入（5万-20万）</label>
+        <label class="option" data-val="4"><div class="radio"></div>较大投入（20万以上）</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 1: 有效性 -->
+  <div class="section" id="step1">
+    <div class="section-title">💰 第一维度：有效性</div>
+    <div class="section-desc">有没有人真掏钱？多久能回本？<br>这一关过不了，后面都不用看。</div>
+
+    <div class="q-card">
+      <div class="q-label">Q1：有人已经为类似服务/产品付过钱吗？</div>
+      <div class="q-hint">注意：是"付过钱"，不是"说会买"</div>
+      <div class="options" id="q1">
+        <label class="option" data-val="2"><div class="radio"></div>已经有人在买了，我有成交记录</label>
+        <label class="option" data-val="1.5"><div class="radio"></div>有类似产品在卖，但还没验证我自己能不能卖出去</label>
+        <label class="option" data-val="1"><div class="radio"></div>有人表示过感兴趣，但没掏钱</label>
+        <label class="option" data-val="0.3"><div class="radio"></div>纯粹是我的想法，还没验证过</label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Q2：预计多久能回本？</div>
+      <div class="q-hint">从投入第一笔钱到收回成本</div>
+      <div class="options" id="q2">
+        <label class="option" data-val="2"><div class="radio"></div>3个月以内</label>
+        <label class="option" data-val="1.5"><div class="radio"></div>3-6个月</label>
+        <label class="option" data-val="1"><div class="radio"></div>6-12个月</label>
+        <label class="option" data-val="0.5"><div class="radio"></div>1年以上</label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Q3：目标客户容易找到吗？</div>
+      <div class="q-hint">你能在1周内接触到你的第一批客户吗</div>
+      <div class="options" id="q3">
+        <label class="option" data-val="2"><div class="radio"></div>很容易，我知道他们在哪，能直接触达</label>
+        <label class="option" data-val="1.3"><div class="radio"></div>还行，需要花点精力找</label>
+        <label class="option" data-val="0.7"><div class="radio"></div>比较难，需要靠投放或长时间积累</label>
+        <label class="option" data-val="0.3"><div class="radio"></div>不清楚，还没想过怎么获客</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2: 易复制性 -->
+  <div class="section" id="step2">
+    <div class="section-title">📦 第二维度：易复制性</div>
+    <div class="section-desc">能不能标准化？能不能离开你自己运转？<br>如果全靠你一个人盯着，那不叫生意，叫打工。</div>
+
+    <div class="q-card">
+      <div class="q-label">Q4：这件事能写成SOP让别人照做吗？</div>
+      <div class="q-hint">一个新手照着流程能做出80%的效果</div>
+      <div class="options" id="q4">
+        <label class="option" data-val="2"><div class="radio"></div>能，流程清晰，培训1-2天就能上手</label>
+        <label class="option" data-val="1.3"><div class="radio"></div>大部分能标准化，但关键环节还得靠经验</label>
+        <label class="option" data-val="0.7"><div class="radio"></div>比较难，很多环节靠个人感觉和判断</label>
+        <label class="option" data-val="0.3"><div class="radio"></div>不能，完全依赖我的个人能力/资源</label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Q5：如果你消失一个月，项目还能正常运转吗？</div>
+      <div class="q-hint">不看消息、不做决策、不出面</div>
+      <div class="options" id="q5">
+        <label class="option" data-val="2"><div class="radio"></div>能，团队/系统自己能跑</label>
+        <label class="option" data-val="1.3"><div class="radio"></div>能撑住大部分，偶尔需要远程指导</label>
+        <label class="option" data-val="0.7"><div class="radio"></div>会出不少问题，但不至于崩</label>
+        <label class="option" data-val="0.3"><div class="radio"></div>直接停摆</label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Q6：能复制到别的城市/人群/渠道吗？</div>
+      <div class="q-hint">同样的模式换个地方能不能再干一遍</div>
+      <div class="options" id="q6">
+        <label class="option" data-val="2"><div class="radio"></div>能，模式通用，换个地方照搬就行</label>
+        <label class="option" data-val="1.3"><div class="radio"></div>能但需要调整，不是原封不动照搬</label>
+        <label class="option" data-val="0.7"><div class="radio"></div>比较难，很依赖特定的人脉/资源/地域</label>
+        <label class="option" data-val="0.3"><div class="radio"></div>不能，只此一家别无分店</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: 可持续性 -->
+  <div class="section" id="step3">
+    <div class="section-title">🔄 第三维度：可持续性</div>
+    <div class="section-desc">客户会回来吗？能做多久？<br>一锤子买卖不算生意，能持续收到钱才算。</div>
+
+    <div class="q-card">
+      <div class="q-label">Q7：客户会重复购买/持续付费吗？</div>
+      <div class="q-hint">想想你的客户会不会来第二次</div>
+      <div class="options" id="q7">
+        <label class="option" data-val="2"><div class="radio"></div>会，这是刚需/高频消费（月付或更短）</label>
+        <label class="option" data-val="1.5"><div class="radio"></div>会，每季度或半年会复购</label>
+        <label class="option" data-val="1"><div class="radio"></div>看情况，不是必然复购</label>
+        <label class="option" data-val="0.3"><div class="radio"></div>基本一锤子买卖</label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Q8：这个生意3年后还能做吗？</div>
+      <div class="q-hint">考虑趋势、竞争、政策变化</div>
+      <div class="options" id="q8">
+        <label class="option" data-val="2"><div class="radio"></div>能，需求稳定且长期存在</label>
+        <label class="option" data-val="1.5"><div class="radio"></div>大概率能，但需要持续迭代</label>
+        <label class="option" data-val="1"><div class="radio"></div>不确定，有被替代的风险</label>
+        <label class="option" data-val="0.5"><div class="radio"></div>悬，可能就是个窗口期机会</label>
+      </div>
+    </div>
+
+    <div class="q-card">
+      <div class="q-label">Q9：收入天花板高吗？</div>
+      <div class="q-hint">做到极限能赚多少</div>
+      <div class="options" id="q9">
+        <label class="option" data-val="2"><div class="radio"></div>很高，可以规模化，上不封顶</label>
+        <label class="option" data-val="1.5"><div class="radio"></div>还行，能稳步增长但增速有限</label>
+        <label class="option" data-val="1"><div class="radio"></div>一般，赚点小钱可以，做大难</label>
+        <label class="option" data-val="0.5"><div class="radio"></div>很低，天花板一眼看到头</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4: 结果 -->
+  <div class="section" id="step4">
+    <div id="resultArea"></div>
+  </div>
+
+  <div class="btn-row" id="btnRow">
+    <button class="btn btn-prev" id="prevBtn" style="display:none">← 上一步</button>
+    <button class="btn btn-next" id="nextBtn" disabled>下一步 →</button>
+  </div>
+
+  <div class="footer">
+    <div class="brand-name">程 有 趣 出 品</div>
+    <div class="copyright">© CHENG YOU QU</div>
+  </div>
+</div>
+
+<script>
+let current = 0;
+const totalSteps = 5;
+const answers = { projName: '', budget: 0, scores: {} };
+
+const questions = {
+  budget: { dim: 'budget', weight: 1 },
+  q1: { dim: 'validity', weight: 2 },
+  q2: { dim: 'validity', weight: 1.5 },
+  q3: { dim: 'validity', weight: 1.5 },
+  q4: { dim: 'scalability', weight: 2 },
+  q5: { dim: 'scalability', weight: 1.5 },
+  q6: { dim: 'scalability', weight: 1.5 },
+  q7: { dim: 'sustainability', weight: 2 },
+  q8: { dim: 'sustainability', weight: 1.5 },
+  q9: { dim: 'sustainability', weight: 1.5 }
+};
+
+// Option click handling
+document.querySelectorAll('.options').forEach(group => {
+  group.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', () => {
+      group.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      const qid = group.id;
+      const val = parseFloat(opt.dataset.val);
+      if (qid === 'budget') answers.budget = val;
+      else answers.scores[qid] = val;
+      checkNext();
+    });
+  });
+});
+
+document.getElementById('projName').addEventListener('input', e => {
+  answers.projName = e.target.value;
+  checkNext();
+});
+
+function checkNext() {
+  const btn = document.getElementById('nextBtn');
+  if (current === 0) {
+    btn.disabled = !answers.projName.trim() || !answers.budget;
+  } else if (current === 1) {
+    btn.disabled = !('q1' in answers.scores) || !('q2' in answers.scores) || !('q3' in answers.scores);
+  } else if (current === 2) {
+    btn.disabled = !('q4' in answers.scores) || !('q5' in answers.scores) || !('q6' in answers.scores);
+  } else if (current === 3) {
+    btn.disabled = !('q7' in answers.scores) || !('q8' in answers.scores) || !('q9' in answers.scores);
+  }
+}
+
+function goStep(step) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  current = step;
+
+  const pct = Math.round((step / (totalSteps - 1)) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `第${step + 1}步 / 共${totalSteps}步`;
+  document.getElementById('progressPct').textContent = pct + '%';
+
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const btnRow = document.getElementById('btnRow');
+
+  prevBtn.style.display = step > 0 && step < 4 ? 'block' : 'none';
+
+  if (step === 3) {
+    nextBtn.textContent = '出结果 🎯';
+    nextBtn.classList.remove('btn-next');
+    nextBtn.classList.add('btn-next', 'btn-submit');
+    checkNext();
+  } else if (step === 4) {
+    btnRow.style.display = 'none';
+    showResult();
+  } else {
+    nextBtn.textContent = '下一步 →';
+    nextBtn.classList.remove('btn-submit');
+    btnRow.style.display = 'flex';
+    checkNext();
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('nextBtn').addEventListener('click', () => goStep(current + 1));
+document.getElementById('prevBtn').addEventListener('click', () => goStep(current - 1));
+
+function calcScores() {
+  const calcDim = (qs) => {
+    let sum = 0, maxSum = 0;
+    qs.forEach(q => {
+      const w = questions[q].weight;
+      sum += (answers.scores[q] || 0) * w;
+      maxSum += 2 * w;
+    });
+    return Math.round((sum / maxSum) * 10);
+  };
+  return {
+    validity: calcDim(['q1', 'q2', 'q3']),
+    scalability: calcDim(['q4', 'q5', 'q6']),
+    sustainability: calcDim(['q7', 'q8', 'q9'])
+  };
+}
+
+function showResult() {
+  const dims = calcScores();
+  const total = dims.validity * dims.scalability * dims.sustainability;
+  const projName = answers.projName;
+
+  let verdict, verdictColor, verdictSub, adviceColor;
+  if (total >= 800) {
+    verdict = '🔥 玩命干';
+    verdictColor = '#2d6a4f';
+    verdictSub = '三个维度都过关了，这种项目不多了。别犹豫，all in 你的时间和精力。';
+    adviceColor = '#2d6a4f';
+  } else if (total >= 600) {
+    verdict = '⚙️ 能干，但你别亲自上';
+    verdictColor = '#b8860b';
+    verdictSub = '项目本身没问题，但得分还没到"拼命"级别。搭好体系让别人干，你管方向。';
+    adviceColor = '#b8860b';
+  } else if (total >= 400) {
+    verdict = '🔧 有硬伤，先补再干';
+    verdictColor = '#c9953c';
+    verdictSub = '不是不能干，是有明显短板。找到最弱的那个维度，解决了再说。';
+    adviceColor = '#c9953c';
+  } else {
+    verdict = '🛑 别干';
+    verdictColor = '#8b2035';
+    verdictSub = '三个维度得分都偏低，强行上就是烧钱。换个方向，重新算。';
+    adviceColor = '#8b2035';
+  }
+
+  // Generate advice based on weakest dimension
+  const dimEntries = [
+    { name: '有效性', score: dims.validity, key: 'validity' },
+    { name: '易复制性', score: dims.scalability, key: 'scalability' },
+    { name: '可持续性', score: dims.sustainability, key: 'sustainability' }
+  ].sort((a, b) => a.score - b.score);
+
+  const weakest = dimEntries[0];
+  const strongest = dimEntries[2];
+
+  const adviceMap = {
+    validity: {
+      weak: {
+        title: '有效性不足：还没人掏钱',
+        advice: '你现在最大的问题不是"怎么做"，而是"有没有人要"。别急着投入，先用最小代价验证——朋友圈发一条、闲鱼挂一个、摆个摊试试。有人掏钱了，才算验证通过。',
+        quote: '真需求不是想出来的，是卖出来的。——第2讲：商业的本质'
+      },
+      mid: {
+        title: '有效性尚可：有人买，但还没跑通',
+        advice: '有需求基础，但还没到"闭着眼睛都能卖"的程度。现在重点是：把成交流程跑顺，找到稳定的获客渠道，让第一笔钱进来。',
+        quote: '磨刀不误砍柴工。把商机公式填明白，比盲目开干重要一万倍。——第4讲：商机万能公式'
+      },
+      strong: {
+        title: '有效性过关：需求真实，能收到钱',
+        advice: '需求验证没问题，这是好事。说明你选的方向有人买单，接下来看另外两个维度能不能撑住规模化。',
+        quote: '谁买单，就讨好谁。——第2讲：商业的本质'
+      }
+    },
+    scalability: {
+      weak: {
+        title: '易复制性不足：全靠你一个人',
+        advice: '这个项目如果离开你就转不动，那本质上你在给自己打工，不是在创业。想想怎么把核心流程标准化，或者砍掉依赖你个人能力的环节。',
+        quote: '小公司一言堂，责任除以二等于零。——第34讲：合伙的买卖能不能做'
+      },
+      mid: {
+        title: '易复制性一般：能标准化一部分',
+        advice: '有些环节能交出去，但关键节点还是得你盯。建议先把能标准化的部分写成SOP，再想办法用工具或人替代你自己。',
+        quote: '做结构是一号位的核心能力。——第35讲：操盘手的核心能力'
+      },
+      strong: {
+        title: '易复制性过关：模式轻、可复制',
+        advice: '标准化程度高，这是能做大做强的基础。说明你有机会搭好体系后脱手，让项目自己跑。',
+        quote: '拿你有的，换你要的。——第1讲：利从哪来'
+      }
+    },
+    sustainability: {
+      weak: {
+        title: '可持续性不足：一锤子买卖',
+        advice: '客户买完就走，你得不断找新客户，成本越来越高。想办法增加复购环节——会员制、定期服务、耗材补充，让客户有理由回来。',
+        quote: '产品品质决定复购，信息能力决定成交。——第7讲：卖，一切都是卖信息'
+      },
+      mid: {
+        title: '可持续性一般：能持续但天花板不高',
+        advice: '不会一锤子死掉，但要做到更大需要突破天花板。考虑能不能做产品延伸、增值服务，或者把一次性客户变成长期客户。',
+        quote: '攒信任→换利润→升责任→赢信任，螺旋上升。——第9讲：财富螺旋公式'
+      },
+      strong: {
+        title: '可持续性过关：客户会回来',
+        advice: '有复购、有长期价值，这是最健康的生意模型。客户留住了，利润自然来。',
+        quote: '信任是消耗品，责任是连接器。——第9讲：财富螺旋公式'
+      }
+    }
+  };
+
+  function getAdviceLevel(score) {
+    if (score <= 4) return 'weak';
+    if (score <= 7) return 'mid';
+    return 'strong';
+  }
+
+  const weakestAdvice = adviceMap[weakest.key][getAdviceLevel(weakest.score)];
+  const strongestAdvice = adviceMap[strongest.key][getAdviceLevel(strongest.score)];
+
+  // Action steps based on verdict
+  let steps = [];
+  if (total >= 800) {
+    steps = [
+      '立刻跑最小闭环——用最快速度完成第一笔成交',
+      '把流程标准化，写成SOP，开始招人/找人合作',
+      '选定主攻渠道，集中所有资源打爆一个品',
+      '设定3个月目标，按月复盘，小步快跑放大'
+    ];
+  } else if (total >= 600) {
+    steps = [
+      '验证最小闭环，确保第一笔钱能收到',
+      `重点补强「${weakest.name}」维度（当前${weakest.score}分）`,
+      '把核心流程写成SOP，让新人能接手80%',
+      '自己抽身做管理，不要陷入执行细节'
+    ];
+  } else if (total >= 400) {
+    steps = [
+      '先别投钱，用最小代价验证需求（朋友圈/闲鱼/摆摊）',
+      `集中解决「${weakest.name}」这个最大短板`,
+      '找到第一个付费客户后再考虑正式投入',
+      '重新评估：如果补强成本太高，考虑换方向'
+    ];
+  } else {
+    steps = [
+      '停下来，别急着干。现在进场就是烧钱',
+      '复盘你的想法，用商机公式重新填空：用___满足___的___',
+      '去找你擅长+有需求+低成本的交叉点',
+      '重新来一遍这个测试，直到分数过600再动手'
+    ];
+  }
+
+  // Render
+  const circumference = 2 * Math.PI * 70;
+  const offset = circumference * (1 - total / 1000);
+
+  let html = `
+    <div class="result-header">
+      <div class="score-circle">
+        <svg viewBox="0 0 160 160">
+          <circle class="bg" cx="80" cy="80" r="70"/>
+          <circle class="fill" cx="80" cy="80" r="70"
+            stroke="${adviceColor}"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${circumference}"
+            id="scoreArc"/>
+        </svg>
+        <div class="score-num" id="scoreNum" style="color:${adviceColor}">0 <small>/1000</small></div>
+      </div>
+      <div class="verdict" style="color:${adviceColor}">${verdict}</div>
+      <div class="verdict-sub">${verdictSub}</div>
+    </div>
+
+    <div class="dim-section">
+      <div class="dim-item">
+        <div class="dim-label"><span>💰 有效性（有人买单吗）</span><span>${dims.validity}/10</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill" style="width:0%;background:${dims.validity>=7?'#2d6a4f':dims.validity>=5?'#b8860b':'#8b2035'}" data-width="${dims.validity*10}%"></div></div>
+      </div>
+      <div class="dim-item">
+        <div class="dim-label"><span>📦 易复制性（能脱离你吗）</span><span>${dims.scalability}/10</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill" style="width:0%;background:${dims.scalability>=7?'#2d6a4f':dims.scalability>=5?'#b8860b':'#8b2035'}" data-width="${dims.scalability*10}%"></div></div>
+      </div>
+      <div class="dim-item">
+        <div class="dim-label"><span>🔄 可持续性（能长久吗）</span><span>${dims.sustainability}/10</span></div>
+        <div class="dim-bar"><div class="dim-bar-fill" style="width:0%;background:${dims.sustainability>=7?'#2d6a4f':dims.sustainability>=5?'#b8860b':'#8b2035'}" data-width="${dims.sustainability*10}%"></div></div>
+      </div>
+    </div>
+
+    <div class="analysis-card">
+      <div class="tag">🔍 最弱环节诊断</div>
+      <h3>${weakestAdvice.title}</h3>
+      <p>${weakestAdvice.advice}</p>
+      <div class="quote">${weakestAdvice.quote}</div>
+    </div>
+
+    <div class="analysis-card">
+      <div class="tag">💪 最大优势</div>
+      <h3>${strongestAdvice.title}</h3>
+      <p>${strongestAdvice.advice}</p>
+      <div class="quote">${strongestAdvice.quote}</div>
+    </div>
+
+    <div class="analysis-card">
+      <div class="tag">📋 「${projName}」行动清单</div>
+      <div class="steps">
+        ${steps.map((s, i) => `<div class="step"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('')}
+      </div>
+    </div>
+  `;
+
+  if (total < 600) {
+    html += `
+    <div class="warning-card">
+      <h3>⚠️ 防骗提醒</h3>
+      <p>如果你的项目信息里有"躺着赚钱""一夜暴富""管道收益""稳赚不赔"这些词，请记住：</p>
+      <p style="color:#d44;font-weight:600;margin-top:8px;font-size:15px">一切教你躺着赚钱或者一夜暴富的，不是骗你，就是教你怎么骗人。</p>
+    </div>`;
+  }
+
+  html += `
+    <div style="text-align:center;margin-top:30px">
+      <button class="btn btn-prev" onclick="resetAll()" style="display:inline-block;width:auto;padding:12px 30px">重新测一个项目</button>
+    </div>
+  `;
+
+  document.getElementById('resultArea').innerHTML = html;
+
+  // Animate
+  setTimeout(() => {
+    document.getElementById('scoreArc').style.strokeDashoffset = offset;
+    document.querySelectorAll('.dim-bar-fill').forEach(bar => {
+      bar.style.width = bar.dataset.width;
+    });
+    // Count up
+    let current = 0;
+    const target = total;
+    const step = Math.ceil(target / 40);
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(interval); }
+      document.getElementById('scoreNum').innerHTML = `${current} <small>/1000</small>`;
+    }, 30);
+  }, 200);
+}
+
+function resetAll() {
+  answers.projName = '';
+  answers.budget = 0;
+  answers.scores = {};
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  document.getElementById('projName').value = '';
+  document.getElementById('btnRow').style.display = 'flex';
+  goStep(0);
+}
+</script>
+</body>
+</html>
