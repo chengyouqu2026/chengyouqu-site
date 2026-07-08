@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>程有趣·副业方向诊断报告</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--white:#e8e4df;--gold:#c9a54e;--red:#8b2252;--card:#141414;--border:#2a2a2a;--dim:#888}
+body{background:var(--bg);color:var(--white);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.6;min-height:100vh;overflow-x:hidden}
+.watermark{position:fixed;top:0;left:0;right:0;text-align:center;padding:8px;font-size:11px;color:rgba(201,165,78,0.3);z-index:999;letter-spacing:3px;background:rgba(10,10,10,0.9);backdrop-filter:blur(4px)}
+.container{max-width:420px;margin:0 auto;padding:0 16px 60px;position:relative}
+
+/* Cover */
+.cover{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:40px 20px;position:relative}
+.cover::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:radial-gradient(ellipse at center,rgba(201,165,78,0.06) 0%,transparent 70%);pointer-events:none}
+.cover-badge{border:1px solid var(--gold);padding:6px 20px;border-radius:20px;font-size:12px;color:var(--gold);letter-spacing:4px;margin-bottom:40px}
+.cover-title{font-size:32px;font-weight:700;letter-spacing:2px;margin-bottom:12px;background:linear-gradient(135deg,var(--white),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.cover-subtitle{font-size:14px;color:var(--dim);margin-bottom:50px;letter-spacing:1px}
+.cover-meta{display:flex;flex-direction:column;gap:8px;font-size:13px;color:#666}
+.cover-meta span{display:flex;align-items:center;gap:8px}
+.cover-line{width:1px;height:80px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);margin:30px auto}
+.verified-badge{margin-top:30px;background:rgba(201,165,78,0.1);border:1px solid rgba(201,165,78,0.3);border-radius:8px;padding:10px 24px;font-size:12px;color:var(--gold);letter-spacing:2px;display:inline-flex;align-items:center;gap:8px}
+.verified-badge::before{content:'✓';font-size:16px;font-weight:bold}
+
+/* Section */
+.section{padding:50px 0 30px;position:relative}
+.section-num{font-size:11px;color:var(--gold);letter-spacing:4px;text-transform:uppercase;margin-bottom:8px;font-weight:600}
+.section-title{font-size:22px;font-weight:700;margin-bottom:24px;letter-spacing:1px}
+.section-title::after{content:'';display:block;width:30px;height:2px;background:var(--gold);margin-top:10px}
+.divider{width:100%;height:1px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:20px 0}
+
+/* Radar */
+.radar-wrap{display:flex;flex-direction:column;align-items:center;margin:20px 0 30px}
+.radar-svg{width:280px;height:280px}
+.radar-legend{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:20px}
+.radar-legend-item{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--dim)}
+.radar-legend-item .dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+.radar-legend-item .score{color:var(--gold);font-weight:700;font-size:14px;margin-left:2px}
+
+/* Profile Card */
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:20px 0}
+.profile-card-header{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.profile-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--red));display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:var(--bg)}
+.profile-info h3{font-size:16px;font-weight:600}
+.profile-info p{font-size:12px;color:var(--dim)}
+.dim-bars{display:flex;flex-direction:column;gap:12px}
+.dim-bar-item{display:flex;flex-direction:column;gap:4px}
+.dim-bar-label{display:flex;justify-content:space-between;font-size:12px}
+.dim-bar-label span:last-child{color:var(--gold);font-weight:700}
+.dim-bar-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.dim-bar-fill{height:100%;border-radius:3px;transition:width 1.2s ease}
+
+/* Match Bars */
+.match-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:16px 0}
+.match-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.match-card-name{font-size:15px;font-weight:600}
+.match-card-score{font-size:28px;font-weight:800;color:var(--gold)}
+.match-card-score small{font-size:12px;color:var(--dim);font-weight:400}
+.match-bar-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin-bottom:16px}
+.match-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--gold),#d4b45e);transition:width 1.5s ease}
+.stars-row{display:flex;flex-direction:column;gap:8px}
+.star-item{display:flex;align-items:center;gap:8px;font-size:12px}
+.star-item-label{width:72px;color:var(--dim);flex-shrink:0}
+.star-icons{display:flex;gap:2px}
+.star-icons .star{color:#333;font-size:14px}
+.star-icons .star.on{color:var(--gold)}
+
+/* Direction Detail */
+.dir-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:24px 20px;margin:20px 0;position:relative;overflow:hidden}
+.dir-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--gold),var(--red))}
+.dir-card-rank{position:absolute;top:16px;right:20px;font-size:40px;font-weight:900;color:rgba(201,165,78,0.1);line-height:1}
+.dir-card h3{font-size:18px;font-weight:700;margin-bottom:4px}
+.dir-card .dir-desc{font-size:13px;color:var(--dim);margin-bottom:16px;line-height:1.5}
+.dir-score-big{text-align:center;margin:16px 0;padding:16px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.dir-score-big .num{font-size:48px;font-weight:900;background:linear-gradient(135deg,var(--gold),#d4b45e);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.1}
+.dir-score-big .unit{font-size:12px;color:var(--dim);margin-top:2px}
+.dir-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.dir-meta-item{background:rgba(201,165,78,0.05);border-radius:8px;padding:12px}
+.dir-meta-item .label{font-size:11px;color:var(--dim);margin-bottom:4px}
+.dir-meta-item .value{font-size:14px;font-weight:600;color:var(--white)}
+.dir-steps{margin:16px 0}
+.dir-steps h4{font-size:13px;color:var(--gold);margin-bottom:10px;letter-spacing:1px}
+.step{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.step-num{width:22px;height:22px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--gold);flex-shrink:0;margin-top:1px}
+.step-text{font-size:13px;color:#bbb;line-height:1.5}
+.dir-risk{background:rgba(139,34,82,0.1);border-left:3px solid var(--red);border-radius:0 8px 8px 0;padding:12px 14px;margin-top:16px;font-size:12px;color:#c88;line-height:1.5}
+.dir-risk strong{color:var(--red);font-size:11px;letter-spacing:1px}
+.dir-audience{margin-top:16px;font-size:12px;color:var(--dim)}
+.dir-audience strong{color:var(--white);font-weight:600}
+
+/* Avoid Pitfalls */
+.pit-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin:14px 0;display:flex;gap:14px;align-items:flex-start}
+.pit-icon{width:36px;height:36px;border-radius:10px;background:rgba(139,34,82,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.pit-text h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.pit-text p{font-size:12px;color:var(--dim);line-height:1.6}
+
+/* Timeline */
+.timeline{position:relative;padding-left:28px;margin:20px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:8px;bottom:8px;width:2px;background:linear-gradient(to bottom,var(--gold),var(--red),var(--gold))}
+.tl-item{position:relative;padding-bottom:30px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{position:absolute;left:-24px;top:4px;width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);background:var(--bg)}
+.tl-item:first-child .tl-dot{background:var(--gold)}
+.tl-time{font-size:13px;font-weight:700;color:var(--gold);margin-bottom:6px;letter-spacing:1px}
+.tl-content{font-size:13px;color:#bbb;line-height:1.7}
+.tl-content strong{color:var(--white)}
+
+/* Footer */
+.footer{text-align:center;padding:50px 0 30px;border-top:1px solid var(--border);margin-top:30px}
+.footer-brand{font-size:14px;color:var(--dim);letter-spacing:3px;margin-bottom:8px}
+.footer-disclaimer{font-size:10px;color:#444;line-height:1.6;max-width:300px;margin:0 auto}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.animate{animation:fadeUp .6s ease forwards;opacity:0}
+.delay-1{animation-delay:.2s}.delay-2{animation-delay:.4s}.delay-3{animation-delay:.6s}
+
+/* Gold shimmer */
+@keyframes shimmer{0%{background-position:-200% center}100%{background-position:200% center}}
+.shimmer-text{background:linear-gradient(90deg,var(--gold),#fff,var(--gold));background-size:200% auto;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:shimmer 3s linear infinite}
+</style>
+</head>
+<body>
+<div class="watermark">程有趣出品</div>
+<div class="container" id="app"></div>
+
+<script>
+const DATA = {
+  user: { name: '匿名用户', tag: '斜杠青年', date: '' },
+  reportId: '',
+  dimensions: [
+    { label: '技能深度', score: 65, color: '#c9a54e' },
+    { label: '资源储备', score: 40, color: '#c9a54e' },
+    { label: '时间充裕度', score: 75, color: '#c9a54e' },
+    { label: '兴趣强度', score: 80, color: '#c9a54e' },
+    { label: '风险承受力', score: 55, color: '#c9a54e' }
+  ],
+  directions: [
+    {
+      name: '自媒体内容创作',
+      score: 85,
+      desc: '你的表达能力和兴趣强度突出，适合通过内容输出建立个人品牌，长期变现潜力高。',
+      income: '3000 - 15000',
+      stars: { '启动难度': 2, '收入潜力': 5, '成长空间': 5, '匹配度': 4 },
+      steps: ['选定一个垂直赛道（如职场干货/生活技能），注册3个平台账号', '每周产出3-5条优质内容，坚持30天找到爆款方向', '积累1000粉丝后开通变现通道（广告/带货/知识付费）'],
+      risk: '前期起量慢，需至少坚持2-3个月才能见到收益，注意避免盲目追热点导致定位模糊。',
+      audience: '有表达欲、能持续输出、愿意学习的长期主义者'
+    },
+    {
+      name: '闲鱼虚拟产品',
+      score: 72,
+      desc: '启动门槛低，适合利用业余时间快速试错，通过信息差赚取差价。',
+      income: '1500 - 8000',
+      stars: { '启动难度': 1, '收入潜力': 3, '成长空间': 2, '匹配度': 4 },
+      steps: ['调研闲鱼热卖虚拟品类（模板/教程/素材），选3-5个品类', '准备货源渠道（自制或合规采购），上架10个商品测试', '根据数据反馈优化标题和图片，跑通出单流程后放大'],
+      risk: '平台规则变动频繁，虚拟产品退款率偏高，需注意合规经营避免违规封号。',
+      audience: '执行力强、对电商感兴趣、愿意花时间研究平台的实操型选手'
+    },
+    {
+      name: '技能接单服务',
+      score: 65,
+      desc: '将现有技能直接变现，单价高但获客依赖个人网络，适合有一技之长的人。',
+      income: '2000 - 12000',
+      stars: { '启动难度': 3, '收入潜力': 4, '成长空间': 3, '匹配度': 3 },
+      steps: ['梳理1-2个可变现的核心技能，在3个接单平台建立服务页面', '通过低价单积累评价和案例，打造可信的服务作品集', '逐步提价并建立老客户转介绍机制，实现稳定接单'],
+      risk: '接单收入不稳定，容易陷入低价竞争，需要持续精进技能和服务质量。',
+      audience: '有明确专业技能（设计/写作/开发等）、喜欢一对一服务的专业型人才'
+    }
+  ],
+  pitfalls: [
+    { icon: '🚫', title: '不要同时铺3个方向', text: '选定匹配度最高的方向集中投入，3个月内不要分心。多线作战是副业最大的敌人。' },
+    { icon: '⏰', title: '不要用主业时间做副业', text: '划定固定的副业时间段（如晚8-10点），保护主业精力。副业亏钱可以重来，丢掉主业得不偿失。' },
+    { icon: '💰', title: '前3个月不要投钱', text: '零成本启动是铁律。在验证跑通盈利模型前，拒绝任何付费推广、加盟、囤货的诱惑。' }
+  ],
+  timeline: [
+    { time: '第1周', content: '<strong>调研定位期</strong>：完成3个方向的深度调研，选定1个主攻方向。注册所需账号，完成基础搭建，产出第一条内容/上架第一个产品。' },
+    { time: '第1个月', content: '<strong>快速验证期</strong>：保持高频输出（每周3-5次），记录每条内容/产品的数据反馈。找到1个有效的方向切入点，获得第一笔收入。' },
+    { time: '第3个月', content: '<strong>规模放大期</strong>：基于验证结果优化流程，建立稳定的内容/产品SOP。月收入目标达到2000+，开始考虑是否需要拓展第二方向。' }
+  ]
+};
+
+// Generate report ID & date
+(function(){
+  const id = 'DIAG-' + Math.random().toString(36).substr(2,4).toUpperCase();
+  DATA.reportId = id;
+  const d = new Date();
+  DATA.user.date = d.getFullYear() + '.' + String(d.getMonth()+1).padStart(2,'0') + '.' + String(d.getDate()).padStart(2,'0');
+})();
+
+function renderStars(count, max=5){
+  let s = '';
+  for(let i=0;i<max;i++) s += `<span class="star ${i<count?'on':''}">★</span>`;
+  return s;
+}
+
+function buildRadarSVG(dims){
+  const cx=140, cy=140, r=110, n=dims.length;
+  const pts = dims.map((d,i)=>{
+    const angle = (Math.PI*2/n)*i - Math.PI/2;
+    return { angle, score: d.score, label: d.label };
+  });
+  // grid circles
+  let gridCircles = '';
+  [0.2,0.4,0.6,0.8,1].forEach(p=>{
+    gridCircles += `<circle cx="${cx}" cy="${cy}" r="${r*p}" fill="none" stroke="#2a2a2a" stroke-width="0.5"/>`;
+  });
+  // axis lines
+  let axisLines = '';
+  pts.forEach(p=>{
+    const x = cx + r*Math.cos(p.angle);
+    const y = cy + r*Math.sin(p.angle);
+    axisLines += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#2a2a2a" stroke-width="0.5"/>`;
+  });
+  // data polygon
+  const dataPts = pts.map(p=>{
+    const pr = r * (p.score/100);
+    return `${cx+pr*Math.cos(p.angle)},${cy+pr*Math.sin(p.angle)}`;
+  }).join(' ');
+  // data dots & labels
+  let dots = '', labels = '';
+  pts.forEach((p,i)=>{
+    const pr = r*(p.score/100);
+    const dx = cx+pr*Math.cos(p.angle);
+    const dy = cy+pr*Math.sin(p.angle);
+    dots += `<circle cx="${dx}" cy="${dy}" r="4" fill="${DATA.dimensions[i].color}" stroke="#0a0a0a" stroke-width="1.5"/>`;
+    const lx = cx+(r+22)*Math.cos(p.angle);
+    const ly = cy+(r+22)*Math.sin(p.angle);
+    const anchor = Math.abs(p.angle+Math.PI/2)<0.1?'middle': (p.angle>Math.PI/2&&p.angle<Math.PI*1.5?'end':'start');
+    labels += `<text x="${lx}" y="${ly}" text-anchor="${Math.cos(p.angle)<-0.1?'end':Math.cos(p.angle)>0.1?'start':'middle'}" dominant-baseline="middle" fill="#888" font-size="11" font-family="inherit">${p.label}</text>`;
+    labels += `<text x="${lx}" y="${ly+14}" text-anchor="${Math.cos(p.angle)<-0.1?'end':Math.cos(p.angle)>0.1?'start':'middle'}" dominant-baseline="middle" fill="${DATA.dimensions[i].color}" font-size="13" font-weight="700" font-family="inherit">${p.score}</text>`;
+  });
+
+  return `<svg class="radar-svg" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="radarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#c9a54e;stop-opacity:0.35"/>
+        <stop offset="100%" style="stop-color:#8b2252;stop-opacity:0.15"/>
+      </linearGradient>
+    </defs>
+    ${gridCircles}${axisLines}
+    <polygon points="${dataPts}" fill="url(#radarGrad)" stroke="#c9a54e" stroke-width="1.5" opacity="0.9"/>
+    ${dots}${labels}
+  </svg>`;
+}
+
+function render(){
+  const d = DATA;
+  const avgScore = Math.round(d.dimensions.reduce((a,b)=>a+b.score,0)/d.dimensions.length);
+  
+  let html = '';
+
+  // === COVER ===
+  html += `
+  <div class="cover">
+    <div class="cover-badge animate">程有趣出品</div>
+    <div class="cover-title animate delay-1">副业方向<br>诊断报告</div>
+    <div class="cover-subtitle animate delay-2">基于个人画像的精准方向匹配</div>
+    <div class="cover-line animate delay-2"></div>
+    <div class="cover-meta animate delay-3">
+      <span>📋 报告编号：${d.reportId}</span>
+      <span>📅 生成日期：${d.user.date}</span>
+      <span>👤 诊断对象：${d.user.name}</span>
+    </div>
+    <div class="verified-badge animate delay-3">兑换码已验证 · 完整版报告</div>
+  </div>`;
+
+  // === SECTION 1: 个人画像 ===
+  html += `
+  <div class="section">
+    <div class="section-num">01 / PROFILE</div>
+    <div class="section-title">个人画像总览</div>
+    <div class="profile-card">
+      <div class="profile-card-header">
+        <div class="profile-avatar">${d.user.name.charAt(0)}</div>
+        <div class="profile-info">
+          <h3>${d.user.name}</h3>
+          <p>综合得分 <strong style="color:var(--gold);font-size:18px">${avgScore}</strong> / 100</p>
+        </div>
+      </div>
+      <div class="dim-bars">
+        ${d.dimensions.map(dim=>`
+        <div class="dim-bar-item">
+          <div class="dim-bar-label"><span>${dim.label}</span><span>${dim.score}</span></div>
+          <div class="dim-bar-track"><div class="dim-bar-fill" style="width:${dim.score}%;background:${dim.score>=70?'var(--gold)':dim.score>=50?'#a08535':'#665520'}"></div></div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div class="radar-wrap">${buildRadarSVG(d.dimensions)}</div>
+  </div>
+  <div class="divider"></div>`;
+
+  // === SECTION 2: 匹配度 ===
+  html += `
+  <div class="section">
+    <div class="section-num">02 / MATCHING</div>
+    <div class="section-title">副业方向匹配度</div>
+    ${d.directions.map((dir,i)=>`
+    <div class="match-card">
+      <div class="match-card-header">
+        <span class="match-card-name">${i+1}. ${dir.name}</span>
+        <span class="match-card-score">${dir.score}<small>/100</small></span>
+      </div>
+      <div class="match-bar-track"><div class="match-bar-fill" style="width:${dir.score}%"></div></div>
+      <div class="stars-row">
+        ${Object.entries(dir.stars).map(([k,v])=>`
+        <div class="star-item">
+          <span class="star-item-label">${k}</span>
+          <div class="star-icons">${renderStars(v)}</div>
+        </div>`).join('')}
+      </div>
+    </div>`).join('')}
+  </div>
+  <div class="divider"></div>`;
+
+  // === SECTION 3: 推荐详解 ===
+  html += `
+  <div class="section">
+    <div class="section-num">03 / DETAILS</div>
+    <div class="section-title">推荐方向详解</div>
+    ${d.directions.map((dir,i)=>`
+    <div class="dir-card">
+      <div class="dir-card-rank">#${i+1}</div>
+      <h3>${dir.name}</h3>
+      <div class="dir-desc">${dir.desc}</div>
+      <div class="dir-score-big">
+        <div class="num shimmer-text">${dir.score}</div>
+        <div class="unit">匹配度评分</div>
+      </div>
+      <div class="dir-meta">
+        <div class="dir-meta-item">
+          <div class="label">💰 预期月收入</div>
+          <div class="value">¥${dir.income}</div>
+        </div>
+        <div class="dir-meta-item">
+          <div class="label">📊 综合评级</div>
+          <div class="value">${dir.score>=80?'S级':dir.score>=70?'A级':'B级'}推荐</div>
+        </div>
+      </div>
+      <div class="dir-steps">
+        <h4>⚡ 启动路径</h4>
+        ${dir.steps.map((s,j)=>`<div class="step"><div class="step-num">${j+1}</div><div class="step-text">${s}</div></div>`).join('')}
+      </div>
+      <div class="dir-risk"><strong>⚠️ 风险提示</strong><br>${dir.risk}</div>
+      <div class="dir-audience"><strong>🎯 适配人群：</strong>${dir.audience}</div>
+    </div>`).join('')}
+  </div>
+  <div class="divider"></div>`;
+
+  // === SECTION 4: 避坑指南 ===
+  html += `
+  <div class="section">
+    <div class="section-num">04 / PITFALLS</div>
+    <div class="section-title">避坑指南</div>
+    ${d.pitfalls.map(p=>`
+    <div class="pit-card">
+      <div class="pit-icon">${p.icon}</div>
+      <div class="pit-text">
+        <h4>${p.title}</h4>
+        <p>${p.text}</p>
+      </div>
+    </div>`).join('')}
+  </div>
+  <div class="divider"></div>`;
+
+  // === SECTION 5: 行动路线 ===
+  html += `
+  <div class="section">
+    <div class="section-num">05 / ROADMAP</div>
+    <div class="section-title">行动路线图</div>
+    <div class="timeline">
+      ${d.timeline.map(t=>`
+      <div class="tl-item">
+        <div class="tl-dot"></div>
+        <div class="tl-time">${t.time}</div>
+        <div class="tl-content">${t.content}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+
+  // === FOOTER ===
+  html += `
+  <div class="footer">
+    <div class="footer-brand">— 程有趣出品 —</div>
+    <p class="footer-disclaimer">本报告基于AI模型分析生成，仅供参考。副业收入因个人执行力、市场环境等因素存在差异，报告中的收入预期不构成任何收益承诺。请根据自身实际情况理性决策。</p>
+  </div>`;
+
+  document.getElementById('app').innerHTML = html;
+
+  // Animate bars on scroll
+  setTimeout(()=>{
+    document.querySelectorAll('.dim-bar-fill, .match-bar-fill').forEach(el=>{
+      const w = el.style.width;
+      el.style.width = '0%';
+      setTimeout(()=>el.style.width = w, 100);
+    });
+  }, 300);
+}
+
+render();
+</script>
+</body>
+</html>
